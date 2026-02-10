@@ -2,70 +2,124 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Ticket Table</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket List</title>
+
+  <!-- Font -->
+  <link rel="stylesheet" type="text/css"
+    href="https://cdn.jsdelivr.net/npm/gotham-fonts@1.0.3/css/gotham-rounded.min.css">
+
   <style>
     body {
-      font-family: Arial, sans-serif;
-      padding: 10px;
+      background: #ffffff;
+      font-family: 'Gotham Rounded', sans-serif;
+      margin: 0;
+      padding: 12px;
     }
+
+    h3 {
+      color: #0B2451;
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+
+    .table-wrapper {
+      border-radius: 16px;
+      box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      background: #fff;
+    }
+
     table {
       border-collapse: collapse;
       width: 100%;
+      table-layout: fixed;
     }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-    }
-    th {
+
+    thead {
       background-color: #f2f2f2;
-      text-align: left;
     }
-    tr:nth-child(even) {background-color: #f9f9f9;}
-    tr:hover {background-color: #e0f7fa;}
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      font-size: 13px;
+      color: #000;
+      word-wrap: break-word;
+    }
+
+    th {
+      text-align: left;
+      font-weight: bold;
+      color: #0B2451;
+    }
+
     tbody {
       display: block;
-      max-height: 300px; /* scrollable height */
+      max-height: 260px;
       overflow-y: auto;
     }
+
     thead, tbody tr {
       display: table;
       width: 100%;
       table-layout: fixed;
     }
+
+    tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tbody tr:hover {
+      background-color: #e0f7fa;
+    }
   </style>
 </head>
+
 <body>
+
   <h3>Tickets</h3>
-  <table id="ticketTable">
-    <thead>
-      <tr>
-        <th>Ticket Number</th>
-        <th>Description</th>
-        <th>Created On</th>
-        <th>State</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+
+  <div class="table-wrapper">
+    <table id="ticketTable">
+      <thead>
+        <tr>
+          <th>Ticket #</th>
+          <th>Description</th>
+          <th>Created On</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
   <script>
-    // Step 1: Get ticket data from URL query param
+    // Read tickets from query params
     const params = new URLSearchParams(window.location.search);
     const ticketsParam = params.get('tickets');
+
     if (ticketsParam) {
-      const tickets = JSON.parse(decodeURIComponent(ticketsParam));
-      const tbody = document.querySelector('#ticketTable tbody');
-      tickets.forEach(ticket => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${ticket.number}</td>
-          <td>${ticket.description}</td>
-          <td>${ticket.created_on}</td>
-          <td>${ticket.state}</td>
-        `;
-        tbody.appendChild(row);
-      });
+      try {
+        const tickets = JSON.parse(decodeURIComponent(ticketsParam));
+        const tbody = document.querySelector('#ticketTable tbody');
+
+        tickets.forEach(function (ticket) {
+          const row = document.createElement('tr');
+          row.innerHTML =
+            '<td>' + ticket.number + '</td>' +
+            '<td>' + ticket.description + '</td>' +
+            '<td>' + ticket.created_on + '</td>' +
+            '<td>' + ticket.state + '</td>';
+
+          tbody.appendChild(row);
+        });
+      } catch (e) {
+        console.error('Invalid ticket data', e);
+      }
     }
   </script>
+
 </body>
 </html>
